@@ -23,6 +23,12 @@ export const Config: Schema<Config> = Schema.object({
   translatorExample: Schema.string().default('{0}（{1}）').description('0 代表原名、1代表翻译后的')
 })
 
+declare module 'koishi' {
+  interface Context {
+    translator: any
+  }
+}
+
 interface NameSet {
   surname: Record<string, number> | string[]
   name: {
@@ -40,7 +46,7 @@ export function apply(ctx: Context, config: Config) {
     //.option('gender', '-g [s:string] s 可选男/man/m、女/female/w、其他/ta/t 指定性别；不指定完全随机')
     .option('locale', '-l 抽取外文名时加上翻译')
     .option('male', "-m 指定抽取男名")
-    .option('female', "-w 指定抽取女名")
+    .option('female', "-f 指定抽取女名")
     .option('ta', "-t 指定性别倾向不明的名")
     .usage(`area 的可选项有 zh ，默认 zh；num 最大${config.numMax}，默认 5；性别指定取决于语料，不能保证正确`)
     .example('.name zh 9 -t')
@@ -78,7 +84,7 @@ export function apply(ctx: Context, config: Config) {
           [surname] = Random.pick(Object.entries(name_set['surname']))
         }
         let r = gender != '' ? gender : Random.pick(GENDER_ARR)
-        if (name_set['name'][r] == null) r = Random.shuffle(GENDER_ARR).find(x => x != null)
+        if (name_set['name'][r] == null) r = Random.shuffle(GENDER_ARR).find(x => name_set['name'][x] != null)
         name = Random.pick(name_set['name'][r])
         arr.push(format([surname, name], area))
       }
@@ -96,7 +102,7 @@ export function apply(ctx: Context, config: Config) {
 function format(arr, area) {
   switch (area) {
     case 'jp': return arr.join(' ')
-    case 'en': return arr.join('·')
+    case 'en': return arr[1] + '·' + arr[0]
     default:
       return arr.join('')
   }

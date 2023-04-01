@@ -9,6 +9,10 @@
     "dist"
   ],
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/FlameTEXT/koishi-plugin-names.git"
+  },
   "scripts": {},
   "keywords": [
     "chatbot",

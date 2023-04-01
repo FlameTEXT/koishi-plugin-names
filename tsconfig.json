@@ -13,7 +13,6 @@
     "jsx": "react-jsx",
     "jsxImportSource": "@satorijs/element",
     "resolveJsonModule": true,
-    "types": ["koishi-plugin-translator-baidu"]
   },
   "include": [
     "src",
